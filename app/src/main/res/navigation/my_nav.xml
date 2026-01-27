@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/addTeacherFragment"
-        android:name="com.example.meye_proapplication.Admin.AddTeacherFragment"
+        android:name="com.example.meye_proapplication.Admin.Fragments.AddTeacherFragment"
         android:label="fragment_add_teacher"
         tools:layout="@layout/fragment_add_teacher" />
     <fragment
