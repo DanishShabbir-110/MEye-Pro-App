@@ -1,10 +1,12 @@
 package com.example.meye_prowithtimetableattendance.FastAPI.APIServices
 
+import com.example.meye_proapplication.FastAPI.APIModels.AllocationSuccess
 import com.example.meye_prowithtimetableattendance.FastAPI.APIModels.User
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.Multipart
@@ -34,6 +36,17 @@ interface DatacellApiService {
     @Multipart
     @POST("/datacell/UploadEnrollmentExcel")
     suspend fun upload_enrollment_excel(
+        @Part file: MultipartBody.Part
+    ): Response<ResponseBody>
+
+    @POST("/datacell/singleAllocation")
+    suspend fun single_allocation(
+        @Body allocation: AllocationSuccess
+    ): Response<ResponseBody>
+
+    @Multipart
+    @POST("/datacell/UploadAllocationExcel")
+    suspend fun upload_allocation_excel(
         @Part file: MultipartBody.Part
     ): Response<ResponseBody>
 }

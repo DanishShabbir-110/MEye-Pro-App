@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.example.meye_proapplication.Datacell.Fragments.AddStudentFragment
+import com.example.meye_proapplication.Datacell.Fragments.CourseAllocationFragment
 import com.example.meye_proapplication.Datacell.Fragments.CourseEnrollmentFragment
 import com.example.meye_proapplication.R
 import com.example.meye_proapplication.databinding.FragmentAddTeacherBinding
@@ -34,7 +35,7 @@ class DatacellFragment : Fragment() {
             val selectedFragment: Fragment? = when (item.itemId) {
                 R.id.nav_add_student -> AddStudentFragment()
                 R.id.nav_enrollment -> CourseEnrollmentFragment()
-                R.id.nav_allocation -> AddStudentFragment()
+                R.id.nav_allocation -> CourseAllocationFragment()
                 else -> null
             }
             selectedFragment?.let {

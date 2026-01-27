@@ -35,4 +35,9 @@
         android:name="com.example.meye_proapplication.Datacell.Fragments.CourseEnrollmentFragment"
         android:label="fragment_course_enrollment"
         tools:layout="@layout/fragment_course_enrollment" />
+    <fragment
+        android:id="@+id/courseAllocationFragment"
+        android:name="com.example.meye_proapplication.Datacell.Fragments.CourseAllocationFragment"
+        android:label="fragment_course_allocation"
+        tools:layout="@layout/fragment_course_allocation" />
 </navigation>

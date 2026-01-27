@@ -12,10 +12,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import com.example.meye_proapplication.Datacell.Fragments.CourseEnrollmentFragment.Companion.EXCEL_PICK_CODE
+import com.example.meye_proapplication.FastAPI.APIModels.AllocationSuccess
 import com.example.meye_proapplication.R
+import com.example.meye_proapplication.databinding.FragmentCourseAllocationBinding
 import com.example.meye_proapplication.databinding.FragmentCourseEnrollmentBinding
 import com.example.meye_prowithtimetableattendance.FastAPI.APIServices.DatacellApiService
 import com.example.meye_prowithtimetableattendance.FastAPI.Client.RetrofitClient
@@ -28,15 +30,15 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
 import java.io.FileOutputStream
 
-class CourseEnrollmentFragment : Fragment() {
+
+class CourseAllocationFragment : Fragment() {
     companion object {
         const val EXCEL_PICK_CODE = 101
     }
     private var selectedExcelFile: File? = null
-    private val binding: FragmentCourseEnrollmentBinding by lazy {
-        FragmentCourseEnrollmentBinding.inflate(layoutInflater)
+    private val binding: FragmentCourseAllocationBinding by lazy {
+        FragmentCourseAllocationBinding.inflate(layoutInflater)
     }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -48,7 +50,14 @@ class CourseEnrollmentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.rgEnrollmentType.setOnCheckedChangeListener {_,checkedId ->
+        val semestersList=arrayOf("1","2","3","4","5","6","7","8")
+        val adapter= ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line,semestersList)
+        binding.spSemester.setAdapter(adapter)
+        val disciplineList=arrayOf("BSCS","BSAI","BSSE")
+        val disciplineAdapter= ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line,disciplineList)
+        binding.spDiscipline.setAdapter(disciplineAdapter)
+
+        binding.rgAllocationType.setOnCheckedChangeListener {_,checkedId ->
             if(checkedId==R.id.rbSingle){
                 binding.layoutSingleForm.visibility=View.VISIBLE
                 binding.layoutBulkForm.visibility=View.GONE
@@ -58,9 +67,7 @@ class CourseEnrollmentFragment : Fragment() {
                 binding.layoutSingleForm.visibility=View.GONE
             }
         }
-        val semestersList=arrayOf("1","2","3","4","5","6","7","8")
-        val adapter= ArrayAdapter(requireContext(),android.R.layout.simple_dropdown_item_1line,semestersList)
-        binding.spEnrSemester.setAdapter(adapter)
+
         binding.cardUpload.setOnClickListener {
             val intent= Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -69,21 +76,22 @@ class CourseEnrollmentFragment : Fragment() {
                 "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", // .xlsx
                 "application/vnd.ms-excel" // .xls
             ))
-            startActivityForResult(intent, EXCEL_PICK_CODE)
+            startActivityForResult(intent, CourseEnrollmentFragment.Companion.EXCEL_PICK_CODE)
         }
-        binding.btnEnroll.setOnClickListener {
+        binding.btnAllocate.setOnClickListener {
             if (binding.rbBulk.isChecked && selectedExcelFile == null) {
                 Toast.makeText(requireContext(), "Please select an Excel file first!", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             if(binding.rbSingle.isChecked){
-                val enrollStuRegno=binding.etEnrRegNo.text.toString()
-                val courseName=binding.etEnrCourseName.text.toString()
-                val section=binding.etEnrSection.text.toString()
-                val semester=binding.spEnrSemester.text.toString().toInt()
-                val session=binding.etEnrSession.text.toString()
+                val allocationTeacherName=binding.etTeacherName.text.toString()
+                val courseName=binding.etCourseName.text.toString()
+                val section=binding.etSection.text.toString()
+                val semester=binding.spSemester.text.toString().toInt()
+                val discipline=binding.spDiscipline.text.toString()
+                val session=binding.etSession.text.toString()
                 if(
-                    enrollStuRegno.isEmpty()||
+                    allocationTeacherName.isEmpty()||
                     courseName.isEmpty()||
                     section.isEmpty()||
                     session.isEmpty()
@@ -91,14 +99,9 @@ class CourseEnrollmentFragment : Fragment() {
                     Toast.makeText(requireContext(), "Please Enter the Complete Data!", Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }
-                lifecycleScope.launch {
-                    singleEnrollment(enrollStuRegno,courseName,section,semester,session)
-                }
+                singleAllocation(courseName,allocationTeacherName,discipline,session,section,semester)
             }else{
-                binding.btnEnroll.text="Enroll Students"
-                lifecycleScope.launch {
-                    uploadExcelForEnrollment(selectedExcelFile)
-                }
+                uploadExcelForAllocation(selectedExcelFile)
             }
         }
     }
@@ -158,37 +161,43 @@ class CourseEnrollmentFragment : Fragment() {
         input?.close()
         return file
     }
-    suspend fun singleEnrollment(
-        regno:String,
+    fun singleAllocation(
         courseName:String,
+        teacherName:String,
+        discipline: String,
+        session: String,
         section:String,
-        semester:Int,
-        session: String
+        semester:Int
     ){
         try{
-            val datacellAPI= RetrofitClient.retrofit.create(DatacellApiService::class.java)
-            val response=datacellAPI.singleEnrollmentofStudent(regno,courseName,section,semester,session)
-            withContext(Dispatchers.Main){
-                if(response.isSuccessful){
-                    val body=response.body()?.string()
-                    Toast.makeText(requireContext(), "$body", Toast.LENGTH_SHORT).show()
-                    binding.etEnrRegNo.text=null
-                    binding.etEnrCourseName.text=null
-                    binding.etEnrSection.text=null
-                    binding.etEnrSession.text=null
-                    binding.spEnrSemester.setText(null, false)
-                }
-                else{
-                    val errorBody=response.errorBody()?.string()
-                    Toast.makeText(requireContext(), "$errorBody", Toast.LENGTH_SHORT).show()
+            val singleAllocaton= AllocationSuccess(courseName,discipline,section,semester,session,teacherName)
+            lifecycleScope.launch(Dispatchers.IO) {
+                val datacellAPI= RetrofitClient.retrofit.create(DatacellApiService::class.java)
+                val response=datacellAPI.single_allocation(singleAllocaton)
+                withContext(Dispatchers.Main){
+                    if(response.isSuccessful){
+                        val body=response.body()?.string()
+                        Toast.makeText(requireContext(), "$body", Toast.LENGTH_SHORT).show()
+                        binding.etTeacherName.text=null
+                        binding.etCourseName.text=null
+                        binding.etSection.text=null
+                        binding.etSession.text=null
+                        binding.spSemester.setText(null, false)
+                        binding.spDiscipline.setText(null,false)
+                    }
+                    else{
+                        val errorBody=response.errorBody()?.string()
+                        Toast.makeText(requireContext(), "$errorBody", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
+
         }
         catch(ex: Exception){
             Log.e("UPLOAD", "err: ${ex.localizedMessage}")
         }
     }
-    suspend fun uploadExcelForEnrollment(
+    fun uploadExcelForAllocation(
         excelSheet:File?
     ){
         try {
@@ -198,21 +207,21 @@ class CourseEnrollmentFragment : Fragment() {
             }
             val reqFile = excelSheet.asRequestBody("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".toMediaTypeOrNull())
             val part=MultipartBody.Part.createFormData("file", excelSheet.name, reqFile)
-            val api= RetrofitClient.retrofit.create(DatacellApiService::class.java)
-            val response=api.upload_enrollment_excel(part)
-            withContext(Dispatchers.Main){
-                if(response.isSuccessful){
-                    val body=response.body()?.string()
-                    Toast.makeText(requireContext(), "$body", Toast.LENGTH_SHORT).show()
-                }else{
-                    val errorBody=response.errorBody()?.string()
-                    Toast.makeText(requireContext(), "$errorBody", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch(Dispatchers.IO) {
+                val api= RetrofitClient.retrofit.create(DatacellApiService::class.java)
+                val response=api.upload_allocation_excel(part)
+                withContext(Dispatchers.Main){
+                    if(response.isSuccessful){
+                        val body=response.body()?.string()
+                        Toast.makeText(requireContext(), "$body", Toast.LENGTH_SHORT).show()
+                    }else{
+                        val errorBody=response.errorBody()?.string()
+                        Toast.makeText(requireContext(), "$errorBody", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
-
         }catch (ex: Exception){
             Log.e("UPLOAD", "err: ${ex.localizedMessage}")
         }
     }
-
 }
