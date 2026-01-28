@@ -81,7 +81,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Please capture 4 angles needed for recognition."
+                    android:text="Capture 4 pictures from different Angle."
                     android:textSize="12sp"
                     android:textColor="@color/text_hint"
                     app:layout_constraintStart_toStartOf="parent"

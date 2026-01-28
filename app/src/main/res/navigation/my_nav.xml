@@ -40,4 +40,9 @@
         android:name="com.example.meye_proapplication.Datacell.Fragments.CourseAllocationFragment"
         android:label="fragment_course_allocation"
         tools:layout="@layout/fragment_course_allocation" />
+    <fragment
+        android:id="@+id/adminFragment"
+        android:name="com.example.meye_proapplication.Admin.AdminFragment"
+        android:label="fragment_admin"
+        tools:layout="@layout/fragment_admin" />
 </navigation>

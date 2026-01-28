@@ -128,19 +128,28 @@ class AddTeacherFragment : Fragment() {
                     passwordReq,
                     filesPart
                 )
-                withContext(Dispatchers.Main){
-                    if(response.isSuccessful){
-                        val body=response.body()
-                        Toast.makeText(requireContext(), "Teacher Added: ${nameReq}", Toast.LENGTH_SHORT).show()
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        val body = response.body()?.string()
+                        Toast.makeText(
+                            requireContext(),
+                            "Teacher Added: ${body}",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         binding.ivFrontImg1.setImageResource(R.drawable.ic_launcher_foreground)
                         binding.ivFrontImg2.setImageResource(R.drawable.ic_launcher_foreground)
                         binding.ivLeftImg.setImageResource(R.drawable.ic_launcher_foreground)
                         binding.ivRightImg.setImageResource(R.drawable.ic_launcher_foreground)
-                        binding.etTeacherId.text=null
-                        binding.etTeacherName.text=null
-                        binding.etTeacherPassword.text=null
-                    }else{
-                        Toast.makeText(requireContext(), "Failed: ${response.code()}", Toast.LENGTH_LONG).show()
+                        binding.etTeacherId.text = null
+                        binding.etTeacherName.text = null
+                        binding.etTeacherPassword.text = null
+                    } else {
+                        val error=response.errorBody()?.string()
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed: ${error}",
+                            Toast.LENGTH_LONG
+                        ).show()
                     }
                 }
             }

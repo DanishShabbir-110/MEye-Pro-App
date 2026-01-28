@@ -7,11 +7,14 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    const val baseUrl="http://192.168.1.88:8000/"
+    const val baseUrl="http://192.168.1.93:8000/"
     private val logging= HttpLoggingInterceptor().apply{
         level= HttpLoggingInterceptor.Level.BODY
     }
     private val client= OkHttpClient.Builder()
+        .connectTimeout(60, TimeUnit.SECONDS)
+        .readTimeout(60, TimeUnit.SECONDS)
+        .writeTimeout(60, TimeUnit.SECONDS)
         .addInterceptor(logging)
         .callTimeout(60, TimeUnit.SECONDS)
         .build()

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/home"
+        android:title="Home"/>
+
+    <item
+        android:id="@+id/nav_dvr_setting"
+        android:icon="@drawable/setting"
+        android:title="DVR"/>
+
+    <item
+        android:id="@+id/nav_upload_timetable"
+        android:icon="@drawable/upload"
+        android:title="Time Table"/>
+    <item
+        android:id="@+id/nav_addUser"
+        android:icon="@drawable/ic_person_add"
+        android:title="Add User"/>
+    <item
+        android:id="@+id/schedule"
+        android:icon="@drawable/calender"
+        android:title="Schedule"/>
+</menu>
