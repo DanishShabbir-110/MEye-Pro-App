@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.meye_proapplication.FastAPI.APIModels.ShowTeacher
 import com.example.meye_proapplication.databinding.RowStaffMemberBinding
 
@@ -30,7 +31,11 @@ class TeacherAdapter(val teachers:List<ShowTeacher>): RecyclerView.Adapter<Teach
         holder.binding.tvStaffName.text=teacher.name.toString()
         val path="http://192.168.1.93:8000/${teacher.pic}"
         Glide.with(holder.itemView.context)
-            .load(path).into(holder.binding.ivProfile)
+            .load(path)
+            .fitCenter()
+            .diskCacheStrategy(DiskCacheStrategy.NONE) // Purani cache delete karega
+            .skipMemoryCache(true) // Memory mein save nahi karega
+            .into(holder.binding.ivProfile)
     }
 
     override fun getItemCount(): Int=teachers.size
