@@ -1,5 +1,6 @@
 package com.example.meye_proapplication
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -20,6 +21,9 @@ import okhttp3.Dispatcher
 import kotlin.math.log
 
 class LoginFragment : Fragment() {
+    private val sharedPrefences by lazy {
+        requireContext().getSharedPreferences("User-Session", Context.MODE_PRIVATE)
+    }
     private val binding: FragmentLoginBinding by lazy {
         FragmentLoginBinding.inflate(layoutInflater)
     }
@@ -27,12 +31,15 @@ class LoginFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        sharedPrefences.edit().clear().apply()
         // Inflate the layout for this fragment
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
         binding.btnLogin.setOnClickListener {
             val userid=binding.etUserId.text.toString().trim()
             val password=binding.etPassword.text.toString().trim()
@@ -51,6 +58,10 @@ class LoginFragment : Fragment() {
                 val response=authAPI.login(userID,password)
                 withContext(Dispatchers.Main){
                     if(response.isSuccessful){
+                        sharedPrefences.edit().apply {
+                            putString("user_id",userID)
+                            apply()
+                        }
                         val role=response.body()?.Role
                         when(role){
                             "Datacell"->findNavController().navigate(R.id.datacellFragment2)

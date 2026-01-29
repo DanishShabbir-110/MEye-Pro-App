@@ -45,4 +45,24 @@
         android:name="com.example.meye_proapplication.Admin.AdminFragment"
         android:label="fragment_admin"
         tools:layout="@layout/fragment_admin" />
+    <fragment
+        android:id="@+id/DVRListFragment"
+        android:name="com.example.meye_proapplication.Admin.Fragments.DVRListFragment"
+        android:label="fragment_d_v_r_list"
+        tools:layout="@layout/fragment_d_v_r_list" />
+    <fragment
+        android:id="@+id/cameraListFragment"
+        android:name="com.example.meye_proapplication.Admin.Fragments.CameraListFragment"
+        android:label="fragment_camera_list"
+        tools:layout="@layout/fragment_camera_list" />
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.meye_proapplication.Admin.Fragments.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+    <fragment
+        android:id="@+id/addCameraFragment"
+        android:name="com.example.meye_proapplication.Admin.Fragments.AddCameraFragment"
+        android:label="fragment_add_camera"
+        tools:layout="@layout/fragment_add_camera" />
 </navigation>

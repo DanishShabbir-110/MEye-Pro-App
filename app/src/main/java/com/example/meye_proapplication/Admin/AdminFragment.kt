@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.example.meye_proapplication.Admin.Fragments.AddTeacherFragment
+import com.example.meye_proapplication.Admin.Fragments.DVRListFragment
 import com.example.meye_proapplication.Admin.Fragments.HomeFragment
 import com.example.meye_proapplication.Datacell.Fragments.AddStudentFragment
 import com.example.meye_proapplication.R
@@ -33,6 +34,7 @@ class AdminFragment : Fragment() {
             val selectedFragment: Fragment?=when(item.itemId){
                 R.id.nav_home-> HomeFragment()
                 R.id.nav_addUser-> AddTeacherFragment()
+                R.id.nav_dvr_setting-> DVRListFragment()
                 else -> null
             }
             selectedFragment?.let {

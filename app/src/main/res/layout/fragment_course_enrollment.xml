@@ -90,7 +90,7 @@
                         android:text="Individual Enrollment"
                         android:checked="true"
                         android:textColor="@color/black"
-                        android:buttonTint="@color/colorPrimary" />
+                        app:buttonTint="@color/radio_selector" />
 
                     <RadioButton
                         android:id="@+id/rbBulk"
@@ -99,7 +99,7 @@
                         android:layout_weight="1"
                         android:text="Batch Enrollment"
                         android:textColor="@color/black"
-                        android:buttonTint="@color/colorPrimary" />
+                        app:buttonTint="@color/radio_selector" />
                 </RadioGroup>
 
                 <View
