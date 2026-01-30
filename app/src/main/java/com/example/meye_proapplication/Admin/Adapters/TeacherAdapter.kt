@@ -29,7 +29,7 @@ class TeacherAdapter(val teachers:List<ShowTeacher>): RecyclerView.Adapter<Teach
         val teacher=teachers[position]
 
         holder.binding.tvStaffName.text=teacher.name.toString()
-        val path="http://192.168.1.93:8000/${teacher.pic}"
+        val path="http://10.97.174.61:8000/${teacher.pic}"
         Glide.with(holder.itemView.context)
             .load(path)
             .fitCenter()

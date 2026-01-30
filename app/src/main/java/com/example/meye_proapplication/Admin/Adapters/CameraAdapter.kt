@@ -28,7 +28,7 @@ class CameraAdapter(val groupList:List<VenueCameraGroup>): RecyclerView.Adapter<
         val item = groupList[position]
 
         // 1. Venue Name Set karein
-        holder.binding.tvVenueName.text = "venue: ${item.venueName}"
+        holder.binding.tvVenueName.text = "Venue: ${item.venueName}"
 
         // --- FRONT CAMERA LOGIC ---
         if (item.frontChannel != null) {

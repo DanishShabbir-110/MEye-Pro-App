@@ -1,6 +1,8 @@
 package com.example.meye_proapplication.Admin.Fragments
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,8 +11,10 @@ import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.meye_proapplication.Admin.Adapters.CameraAdapter
+import com.example.meye_proapplication.FastAPI.APIModels.AddCamera
 import com.example.meye_proapplication.FastAPI.APIModels.VenueCameraGroup
 import com.example.meye_proapplication.R
+import com.example.meye_proapplication.databinding.DialogAddCameraBinding
 import com.example.meye_proapplication.databinding.FragmentCameraListBinding
 import com.example.meye_prowithtimetableattendance.FastAPI.APIServices.AdminApiService
 import com.example.meye_prowithtimetableattendance.FastAPI.Client.RetrofitClient
@@ -39,6 +43,9 @@ class CameraListFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             parentFragmentManager.popBackStack()
         }
+        binding.fabAddCamera.setOnClickListener {
+            showDialog()
+        }
     }
     private fun fetchConnectedCameras(mac: String) {
         lifecycleScope.launch(Dispatchers.IO) {
@@ -50,7 +57,6 @@ class CameraListFragment : Fragment() {
                     if (response.isSuccessful) {
                         val rawList = response.body()?.cameras ?: emptyList()
 
-                        // --- 🧠 MAGIC LOGIC: Grouping Data ---
                         // Hum ek Map banayenge jahan Key = Venue Name hogi
                         val groupedMap = mutableMapOf<String, VenueCameraGroup>()
 
@@ -85,7 +91,7 @@ class CameraListFragment : Fragment() {
                             binding.rvCameraList.adapter = adapter
 
                         } else {
-                            Toast.makeText(requireContext(), "No Cameras Found", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(requireContext(), "No Cameras Connected with this DVR", Toast.LENGTH_SHORT).show()
                         }
 
                     } else {
@@ -97,6 +103,71 @@ class CameraListFragment : Fragment() {
                     Toast.makeText(context, "Error: ${e.localizedMessage}", Toast.LENGTH_SHORT).show()
                 }
             }
+        }
+    }
+    fun showDialog(){
+        val dialogBinding= DialogAddCameraBinding.inflate(layoutInflater)
+        val builder= AlertDialog.Builder(requireContext())
+        builder.setView(dialogBinding.root)
+        val dialog=builder.create()
+        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
+        dialogBinding.btnCancel.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialogBinding.btnSaveCamera.setOnClickListener {
+            val venue=dialogBinding.etVenueName.text.toString()
+            val ip=dialogBinding.etCameraIp.text.toString()
+            val mac=dialogBinding.etCameraMac.text.toString()
+            val channelNo=dialogBinding.etChannel.text.toString().toInt()
+            val dvrMac = arguments?.getString("MAC") ?: ""
+            var placement: String
+            if(dialogBinding.rbFront.isChecked)
+                placement="Front"
+            else
+                placement="Back"
+            addCamera(
+                mac,
+                ip,
+                venue,
+                dvrMac,
+                channelNo,
+                "1020x121",
+                "Active",
+                placement
+            )
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
+    private fun addCamera(
+        camMAC:String,
+        camIP:String,
+        venue:String,
+        dvrId:String,
+        channelNo:Int,
+        resolution:String,
+        status:String,
+        placement: String
+    ){
+        try {
+            val dvrMac = arguments?.getString("MAC") ?: ""
+            val camera= AddCamera(camIP,channelNo,dvrId,camMAC,placement,resolution,status,venue)
+            lifecycleScope.launch(Dispatchers.IO) {
+                val api= RetrofitClient.retrofit.create(AdminApiService::class.java)
+                val response=api.add_camera(camera)
+                withContext(Dispatchers.Main){
+                    if(response.isSuccessful){
+                        val body=response.body()?.string()
+                        Toast.makeText(requireContext(),body, Toast.LENGTH_SHORT).show()
+                        fetchConnectedCameras(dvrMac)
+                    }else{
+                        val error=response.errorBody()?.string()
+                        Toast.makeText(requireContext(),error,Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }catch (ex:Exception){
+            Log.e("UPLOAD", "err: ${ex.localizedMessage}")
         }
     }
 }
