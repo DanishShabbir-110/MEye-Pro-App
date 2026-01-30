@@ -66,6 +66,7 @@ class LoginFragment : Fragment() {
                         when(role){
                             "Datacell"->findNavController().navigate(R.id.datacellFragment2)
                             "Admin"->findNavController().navigate(R.id.adminFragment)
+                            "Teacher"->findNavController().navigate(R.id.teacherFragment)
                         }
                     }else{
                         val errorBody=response.errorBody()?.string()

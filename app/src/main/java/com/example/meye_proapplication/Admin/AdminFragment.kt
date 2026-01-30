@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import com.example.meye_proapplication.Admin.Fragments.AddTeacherFragment
 import com.example.meye_proapplication.Admin.Fragments.DVRListFragment
 import com.example.meye_proapplication.Admin.Fragments.HomeFragment
+import com.example.meye_proapplication.Admin.Fragments.UploadTimetableFragment
 import com.example.meye_proapplication.Datacell.Fragments.AddStudentFragment
 import com.example.meye_proapplication.R
 import com.example.meye_proapplication.databinding.FragmentAdminBinding
@@ -35,6 +36,7 @@ class AdminFragment : Fragment() {
                 R.id.nav_home-> HomeFragment()
                 R.id.nav_addUser-> AddTeacherFragment()
                 R.id.nav_dvr_setting-> DVRListFragment()
+                R.id.nav_upload_timetable-> UploadTimetableFragment()
                 else -> null
             }
             selectedFragment?.let {

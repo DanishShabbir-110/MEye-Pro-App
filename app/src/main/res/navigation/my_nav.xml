@@ -65,4 +65,19 @@
         android:name="com.example.meye_proapplication.Admin.Fragments.AddCameraFragment"
         android:label="fragment_add_camera"
         tools:layout="@layout/fragment_add_camera" />
+    <fragment
+        android:id="@+id/uploadTimetableFragment"
+        android:name="com.example.meye_proapplication.Admin.Fragments.UploadTimetableFragment"
+        android:label="fragment_upload_timetable"
+        tools:layout="@layout/fragment_upload_timetable" />
+    <fragment
+        android:id="@+id/teacherFragment"
+        android:name="com.example.meye_proapplication.Teacher.TeacherFragment"
+        android:label="fragment_teacher"
+        tools:layout="@layout/fragment_teacher" />
+    <fragment
+        android:id="@+id/teacherHomeFragment"
+        android:name="com.example.meye_proapplication.Teacher.Fragments.TeacherHomeFragment"
+        android:label="fragment_teacher_home"
+        tools:layout="@layout/fragment_teacher_home" />
 </navigation>

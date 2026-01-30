@@ -58,4 +58,10 @@ interface AdminApiService {
     suspend fun getCameras(
         @Query("dvr_id")dvr_id: String
     ):Response<CameraResponse>
+
+    @Multipart
+    @POST("/admin/upload_timetable")
+    suspend fun upload_and_update_timetable(
+        @Part file: MultipartBody.Part
+    ): Response<ResponseBody>
 }
