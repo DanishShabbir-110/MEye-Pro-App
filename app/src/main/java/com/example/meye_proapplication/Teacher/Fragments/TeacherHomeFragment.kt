@@ -47,9 +47,13 @@ class TeacherHomeFragment : Fragment() {
                 withContext(Dispatchers.Main){
                     if(response.isSuccessful){
                         val classes=response.body()?.Lectures?:emptyList()
-                        binding.rvSchedule.layoutManager= LinearLayoutManager(requireContext())
-                        val adapter= ScheduleAdapter(classes)
-                        binding.rvSchedule.adapter=adapter
+                        if(classes.isEmpty()){
+                            binding.tvNoClasses.visibility= View.VISIBLE
+                        }else{
+                            binding.rvSchedule.layoutManager= LinearLayoutManager(requireContext())
+                            val adapter= ScheduleAdapter(classes)
+                            binding.rvSchedule.adapter=adapter
+                        }
                     }else{
                         val error=response.errorBody()?.string()
                         Toast.makeText(requireContext(),"Error: $error", Toast.LENGTH_SHORT).show()
